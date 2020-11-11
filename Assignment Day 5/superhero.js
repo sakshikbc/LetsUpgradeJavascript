@@ -1,4 +1,5 @@
 const http = require('http');
+const url = require('url');
 let superheroes = [
     {
         "id": "1",
@@ -26,9 +27,11 @@ let superheroes = [
 
 const server = http.createServer((request, response) => {
     
-    const path = request.url;
+    // const path = request.url;
+    const path = url.parse(request.url, true);
+
     // console.log(path, superheroes);
-    if (request.url == '/') {
+    if (path.pathname == '/') {
         if (request.method == 'OPTIONS') {
             response.end();
         }
@@ -47,7 +50,8 @@ const server = http.createServer((request, response) => {
 
             response.end(JSON.stringify({message: "SuperHero Added to the Mission"}))
         } else if (request.method == 'PUT') {
-            let id = request.url.split('?')[1].split('=')[1];
+            // let id = request.url.split('?')[1].split('=')[1];
+            const id = path.query.id;
             let body = "";
             request.on('data', (data) => {
                 body += data;
